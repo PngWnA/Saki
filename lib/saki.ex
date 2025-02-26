@@ -1,6 +1,6 @@
-defmodule Core do
+defmodule Saki do
   @moduledoc """
-  Documentation for `Core`.
+  Documentation for `Saki`.
   """
 
   @doc """
@@ -8,7 +8,7 @@ defmodule Core do
 
   ## Examples
 
-      iex> Core.hello()
+      iex> Saki.hello()
       :world
 
   """

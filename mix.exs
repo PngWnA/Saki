@@ -3,16 +3,19 @@ defmodule Saki.MixProject do
 
   def project do
     [
-      apps_path: "apps",
+      app: :saki,
       # headVer를 변형하여 사용합니다.
+      # 즉, Mix project의 semantic versioning 제약을 무시합니다.
       # https://techblog.lycorp.co.jp/ko/headver-new-versioning-system-for-product-teams
       version: "#{head_ver()}.#{cal_ver()}.#{git_ver()}",
+      description: "Saki-Chan",
+      elixir: "~> 1.15",
       start_permanent: Mix.env() == :prod,
       deps: deps()
     ]
   end
 
-  # 해당 버전을 수정합니다.
+  # 해당 버전값만 수정합니다.
   defp head_ver do
     1
   end
@@ -20,6 +23,7 @@ defmodule Saki.MixProject do
   # 릴리즈시의 연월
   defp cal_ver do
     {{year, month, _}, _} = :calendar.local_time()
+
     with short_year <- rem(year, 100) do
       cond do
         month in 1..9 -> "#{short_year}0#{month}"
@@ -29,25 +33,28 @@ defmodule Saki.MixProject do
   end
 
   # 커밋 버전
+  # semantic version으로 인식되도록 하기 위하여 git commit id를 10진수로 변환하여 표현합니다.
   defp git_ver do
     with {sha, 0} <- System.cmd("git", ["rev-parse", "--short", "HEAD"]) do
-      sha |> String.trim
+      sha
+        |> String.trim()
+        |> String.to_integer(16)
     end
   end
 
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger],
-      mod: {Saki.Application, []}
+      mod: {Saki.Application, []},
+      extra_applications: [:logger]
     ]
   end
 
-  # Run "mix help deps" to learn about dependencies.
+  # 의존성을 정의합니다.
   defp deps do
     [
-      # {:dep_from_hexpm, "~> 0.3.0"},
-      # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}
+      {:plug_cowboy, "~> 2.6"},
+      {:jason, "~> 1.4"}
     ]
   end
 end

@@ -1,6 +1,7 @@
 defmodule Saki.Tasks.Ping do
   @behaviour Saki.Tasks.TaskSpecification
 
+  require Logger
   alias Saki.Tasks.TaskContext
 
   def cron_schedule do
@@ -15,7 +16,8 @@ defmodule Saki.Tasks.Ping do
   end
 
   def execute(%TaskContext{} = context) do
-    # @Note: Implement this if needed
+    # Note: Implement this if needed
+    Logger.info("pong!")
     {:ok, context}
   end
 end

@@ -46,7 +46,7 @@ defmodule Saki.MixProject do
   def application do
     [
       mod: {Saki.Application, []},
-      extra_applications: [:logger]
+      extra_applications: [:logger, :quantum]
     ]
   end
 
@@ -54,7 +54,8 @@ defmodule Saki.MixProject do
   defp deps do
     [
       {:plug_cowboy, "~> 2.6"},
-      {:jason, "~> 1.4"}
+      {:jason, "~> 1.4"},
+      {:quantum, "~> 3.5.3"},
     ]
   end
 end

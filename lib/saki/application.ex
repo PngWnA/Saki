@@ -5,11 +5,14 @@ defmodule Saki.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      # HTTP Server
-      {Plug.Cowboy, scheme: :http, plug: Saki.Core.HTTPServer, options: [port: 8080]},
-
       # Job dispatcher
       Saki.Core.Dispatcher,
+
+      # Cron Executor
+      Saki.Core.CronExecutor,
+
+      # HTTP Server
+      {Plug.Cowboy, scheme: :http, plug: Saki.Core.HTTPServer, options: [port: 8080]},
     ]
 
     opts = [strategy: :one_for_one, name: Saki.Core.Supervisor]

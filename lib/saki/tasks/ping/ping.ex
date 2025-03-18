@@ -8,7 +8,10 @@ defmodule Saki.Tasks.Ping do
   end
 
   def should_handle?(%TaskContext{} = context) do
-    context.request.url === "/ping"
+    case context.request.from do
+      :cron -> false
+      :http -> context.request.url === "/ping"
+    end
   end
 
   def execute(%TaskContext{} = context) do

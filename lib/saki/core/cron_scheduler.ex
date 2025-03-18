@@ -29,9 +29,8 @@ defmodule Saki.Core.CronScheduler do
   end
 
   defp run(task) do
-    IO.puts "gogo"
     context = %TaskContext{
-      request: %{"source" => "cron", "task" => task},
+      request: %{:from => :cron, :task => task},
       context: %{},
       log: %{}
     }

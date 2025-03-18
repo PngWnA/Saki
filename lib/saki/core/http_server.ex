@@ -25,6 +25,7 @@ defmodule Saki.Core.HTTPServer do
 
       context = %TaskContext{
         request: %{
+          from: :http,
           method: conn.method,
           url: conn.request_path,
           params: conn.params,

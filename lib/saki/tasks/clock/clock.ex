@@ -7,13 +7,14 @@ defmodule Saki.Tasks.Clock do
     "* * * * *"
   end
 
-  def should_handle?(context) do
-    IO.puts(context)
-    true
+  def should_handle?(%TaskContext{} = context) do
+    case context.request.from do
+      :cron -> true
+      :http -> false
+    end
   end
 
   def execute(%TaskContext{} = context) do
-    # @Note: Implement this if needed
     IO.puts "clock"
     {:ok, context}
   end

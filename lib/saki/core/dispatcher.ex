@@ -26,8 +26,9 @@ defmodule Saki.Core.Dispatcher do
   #Saki.Tasks.TaskSepcification를 구현하였는지 확인
   defp implements_task_specification?(module) do
     # 더 우아한 방법이 있을까? 언어 명세에는 없는 것으로 보임
-    function_exported?(module, :should_process?, 1)
-    && function_exported?(module, :process, 1)
+    function_exported?(module, :cron_schedule, 0)
+    && function_exported?(module, :should_handle?, 1)
+    && function_exported?(module, :execute, 1)
   end
 
   # HTTP 서버에서 호출하는 비동기 메시지 전송 함수

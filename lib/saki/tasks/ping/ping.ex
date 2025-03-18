@@ -3,12 +3,16 @@ defmodule Saki.Tasks.Ping do
 
   alias Saki.Tasks.TaskContext
 
-  def should_process?(%TaskContext{} = context) do
+  def cron_schedule do
+    nil
+  end
+
+  def should_handle?(%TaskContext{} = context) do
     context.request.url === "/ping"
   end
 
-  def process(%TaskContext{} = context) do
-    # @Note: Implement this
+  def execute(%TaskContext{} = context) do
+    # @Note: Implement this if needed
     {:ok, context}
   end
 end

@@ -1,6 +1,7 @@
 defmodule Saki.Core.Dispatcher do
   use GenServer
   require Logger
+  alias Saki.Core.CronScheduler
   alias Saki.Tasks.TaskContext
   alias Saki.Tasks.Util, as: TaskUtil
 
@@ -10,8 +11,9 @@ defmodule Saki.Core.Dispatcher do
 
   def init(_) do
     tasks = TaskUtil.valid_tasks
-
     Logger.info("Following tasks will be registered in Dispatcher: #{inspect(tasks)}")
+
+    CronScheduler.start()
 
     {:ok, %{tasks: tasks}}
   end

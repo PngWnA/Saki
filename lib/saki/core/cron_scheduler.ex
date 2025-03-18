@@ -7,7 +7,7 @@ defmodule Saki.Core.CronScheduler do
 
   require Logger
 
-  def init(opt) do
+  def start() do
     scheduled_tasks = TaskUtil.valid_tasks
     |> Enum.filter(&(&1.cron_schedule() !== nil))
 
@@ -26,7 +26,6 @@ defmodule Saki.Core.CronScheduler do
         end
       )
     )
-    opt
   end
 
   defp run(task) do

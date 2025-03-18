@@ -8,8 +8,8 @@ defmodule Saki.Application do
       # Job dispatcher
       Saki.Core.Dispatcher,
 
-      # Cron Executor
-      Saki.Core.CronExecutor,
+      # Cron scheduler
+      Saki.Core.CronScheduler,
 
       # HTTP Server
       {Plug.Cowboy, scheme: :http, plug: Saki.Core.HTTPServer, options: [port: 8080]},

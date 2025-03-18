@@ -1,4 +1,4 @@
-defmodule Saki.Core.CronExecutor do
+defmodule Saki.Core.CronScheduler do
   use Quantum, otp_app: :saki
 
   alias Saki.Core.Dispatcher
@@ -7,7 +7,7 @@ defmodule Saki.Core.CronExecutor do
 
   require Logger
 
-  def init(opts) do
+  def init(opt) do
     scheduled_tasks = TaskUtil.valid_tasks
     |> Enum.filter(&(&1.cron_schedule() !== nil))
 
@@ -17,16 +17,16 @@ defmodule Saki.Core.CronExecutor do
     |> Enum.each(
       &(
         with {:ok, schedule} <- Crontab.CronExpression.Parser.parse(&1.cron_schedule()) do
-          task = new_job()
+          new_job()
           |> Quantum.Job.set_name(&1)
           |> Quantum.Job.set_schedule(schedule)
           |> Quantum.Job.set_task(fn -> run(&1) end)
           |> Quantum.Job.set_state(:active)
-          add_job(:test, task)
+          |> add_job()
         end
       )
     )
-    opts
+    opt
   end
 
   defp run(task) do

@@ -7,6 +7,7 @@ defmodule Saki.Core.CronScheduler do
 
   require Logger
 
+  # Note: 모듈이 스스로 start될 수 있도록 변경하는 것이 좋아보임
   def start() do
     scheduled_tasks = TaskUtil.valid_tasks
     |> Enum.filter(&(&1.cron_schedule() !== nil))

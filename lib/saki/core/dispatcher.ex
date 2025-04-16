@@ -13,6 +13,7 @@ defmodule Saki.Core.Dispatcher do
     tasks = TaskUtil.valid_tasks
     Logger.info("Following tasks will be registered in Dispatcher: #{inspect(tasks)}")
 
+    # Note: 더 좋은 방법이 없을까? CronScheduler도 독립적으로 동작하게 하는 것이 나아보임.
     CronScheduler.start()
 
     {:ok, %{tasks: tasks}}
@@ -33,7 +34,7 @@ defmodule Saki.Core.Dispatcher do
         []
           -> Logger.info("No tasks are found elligible for context #{inspect(context)}")
         _ ->
-          Logger.info("Tasks #{inspect(elligible_tasks)} will process the context #{inspect(context)}")
+          Logger.info("Tasks #{inspect(elligible_tasks)} will process the task context #{inspect(context)}")
           elligible_tasks
           |> Enum.each(&(&1.execute(context)))
       end

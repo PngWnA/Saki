@@ -21,7 +21,7 @@ defmodule Saki.Core.Dispatcher do
   @impl GenServer
   def init(_) do
     tasks = TaskUtil.valid_tasks()
-    Logger.info("Loaded #{length(tasks)} tasks")
+    Logger.info("Loaded #{length(tasks)} tasks: #{inspect(tasks)}")
     {:ok, %{tasks: tasks}}
   end
 

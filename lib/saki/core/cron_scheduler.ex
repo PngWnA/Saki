@@ -1,47 +1,36 @@
 defmodule Saki.Core.CronScheduler do
-  use Quantum, otp_app: :saki
-
-  alias Saki.Core.Dispatcher
   alias Saki.Tasks.TaskContext
   alias Saki.Tasks.Util, as: TaskUtil
+  alias Saki.Core.Dispatcher
+  alias Saki.Tasks.Clock
 
   require Logger
 
-  @impl true
-  def init(config) do
-    schedule_tasks()
-    config
-  end
-
-  defp schedule_tasks do
-    scheduled_tasks = TaskUtil.valid_tasks
+  @doc """
+  Initialize the CronScheduler during application startup.
+  This only logs available tasks; actual scheduling is done by Oban.Plugins.Cron.
+  """
+  def init do
+    scheduled_tasks = TaskUtil.valid_tasks()
     |> Enum.filter(&(&1.cron_schedule() !== nil))
 
     Logger.info("Following tasks will be handled in Cron Executor: #{inspect(scheduled_tasks)}")
-
-    scheduled_tasks
-    |> Enum.each(
-      &(
-        with {:ok, schedule} <- Crontab.CronExpression.Parser.parse(&1.cron_schedule()) do
-          new_job()
-          |> Quantum.Job.set_name(&1)
-          |> Quantum.Job.set_schedule(schedule)
-          |> Quantum.Job.set_task(fn -> run(&1) end)
-          |> Quantum.Job.set_state(:active)
-          |> add_job()
-        end
-      )
-    )
+    :ok
   end
 
-  defp run(task) do
+  @doc """
+  Called by Oban.Plugins.Cron based on the crontab configuration.
+  """
+  def run_clock_task(_) do
+    Logger.debug("Running clock task via Oban")
     context = %TaskContext{
       id: :crypto.strong_rand_bytes(16) |> Base.encode16(),
-      request: %{:from => :cron, :task => task},
+      request: %{:from => :cron, :task => Clock},
       context: %{},
       log: %{}
     }
 
-    Dispatcher.dispatch(context, [task])
+    Dispatcher.dispatch(context, [Clock])
+    :ok
   end
 end

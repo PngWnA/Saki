@@ -2,14 +2,16 @@ defmodule Saki.Tasks.TaskContext do
 
   @derive Jason.Encoder
   defstruct [
-    # Task ID
-    id: :crypto.strong_rand_bytes(16) |> Base.encode16,
-    # For handling or dispatching request
+    id: :crypto.strong_rand_bytes(16) |> Base.encode16(),
     request: %{},
-    # For managing context while processing request
     context: %{},
-    # For leaving log for finished job
     log: %{},
   ]
 
+  @type t :: %__MODULE__{
+    id: String.t(),
+    request: map(),
+    context: map(),
+    log: map()
+  }
 end

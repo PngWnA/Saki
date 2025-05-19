@@ -22,7 +22,7 @@ defmodule Saki.MixProject do
 
   # 릴리즈시의 연월
   defp cal_ver do
-    {{year, month, _}, _} = :calendar.local_time()
+    {{year, month, _}, _} = :calendar.universal_time()
 
     with short_year <- rem(year, 100) do
       cond do

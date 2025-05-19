@@ -7,8 +7,13 @@ defmodule Saki.Core.CronScheduler do
 
   require Logger
 
-  # Note: 모듈이 스스로 start될 수 있도록 변경하는 것이 좋아보임
-  def start() do
+  @impl true
+  def init(config) do
+    schedule_tasks()
+    config
+  end
+
+  defp schedule_tasks do
     scheduled_tasks = TaskUtil.valid_tasks
     |> Enum.filter(&(&1.cron_schedule() !== nil))
 
@@ -36,7 +41,6 @@ defmodule Saki.Core.CronScheduler do
       log: %{}
     }
 
-    context |> Dispatcher.dispatch
+    Dispatcher.dispatch(context, [task])
   end
-
 end

@@ -10,7 +10,7 @@ defmodule Saki.Application do
       Saki.Core.CronScheduler,
 
       # HTTP Server
-      {Plug.Cowboy, scheme: :http, plug: Saki.Core.HTTPServer, options: [port: 8080]},
+      {Plug.Cowboy, scheme: :http, plug: Saki.Core.HTTPServer, options: [port: 31413]},
 
       # Job dispatcher
       Saki.Core.Dispatcher,

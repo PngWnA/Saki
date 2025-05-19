@@ -1,5 +1,5 @@
 defmodule Saki.Tasks.Clock do
-  @behaviour Saki.Tasks.TaskSpecification
+  use Saki.Tasks.TaskSpecification
 
   alias Saki.Tasks.TaskContext
 

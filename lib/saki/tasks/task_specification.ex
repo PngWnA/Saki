@@ -1,9 +1,16 @@
 defmodule Saki.Tasks.TaskSpecification do
   @moduledoc """
-  해당 TaskSpecification 내 함수를 구현해야 Dispatcher에 등록될 수 있습니다.
+  해당 TaskSpecification 내 함수를 구현해야
+  Dispatcher와 Cron Scheduler에 등록될 수 있습니다.
   """
 
   alias Saki.Tasks.TaskContext
+
+  defmacro __using__(_opts) do
+    quote do
+      @behaviour Saki.Tasks.TaskSpecification
+    end
+  end
 
   @doc """
   Cron 형식으로 Task가 수행될 경우 cron expression을 반환

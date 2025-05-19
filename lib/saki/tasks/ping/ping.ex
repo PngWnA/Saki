@@ -1,5 +1,5 @@
 defmodule Saki.Tasks.Ping do
-  @behaviour Saki.Tasks.TaskSpecification
+  use Saki.Tasks.TaskSpecification
 
   require Logger
   alias Saki.Tasks.TaskContext

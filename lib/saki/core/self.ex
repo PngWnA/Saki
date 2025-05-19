@@ -1,11 +1,16 @@
 defmodule Saki.Core.Self do
 
-  [{:app, app}, {:version, version}, {:description, description} | _] = Saki.MixProject.project()
-
   @derive Jason.Encoder
-  defstruct [
-    app: app,
-    version: version,
-    description: description,
-  ]
+  defstruct [:app, :version, :description]
+
+  def info do
+    environments = Application.get_all_env(:saki)
+
+    %__MODULE__{
+      app: :saki,
+      version: Application.spec(:saki, :vsn) |> to_string(),
+      description: environments[:description] || "Saki-Chan"
+    }
+  end
+
 end

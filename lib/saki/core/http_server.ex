@@ -42,7 +42,9 @@ defmodule Saki.Core.HTTPServer do
   end
 
   defp build_context(conn, body) do
-    %TaskContext{request: %{
+    %TaskContext{
+      id: :crypto.strong_rand_bytes(16) |> Base.encode16(),
+      request: %{
       from: :http,
       method: conn.method,
       url: conn.request_path,

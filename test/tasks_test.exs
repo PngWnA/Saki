@@ -29,6 +29,7 @@ defmodule Saki.TasksTest do
   describe "task dispatch" do
     test "ping task is dispatched for HTTP ping" do
       context = %TaskContext{
+        id: :crypto.strong_rand_bytes(16) |> Base.encode16(),
         request: %{from: :http, url: "/ping"}
       }
 
@@ -37,6 +38,7 @@ defmodule Saki.TasksTest do
 
     test "ping task is not dispatched for cron" do
       context = %TaskContext{
+        id: :crypto.strong_rand_bytes(16) |> Base.encode16(),
         request: %{from: :cron}
       }
 
@@ -45,6 +47,7 @@ defmodule Saki.TasksTest do
 
     test "clock task is dispatched for cron" do
       context = %TaskContext{
+        id: :crypto.strong_rand_bytes(16) |> Base.encode16(),
         request: %{from: :cron}
       }
 
@@ -53,6 +56,7 @@ defmodule Saki.TasksTest do
 
     test "clock task is not dispatched for HTTP" do
       context = %TaskContext{
+        id: :crypto.strong_rand_bytes(16) |> Base.encode16(),
         request: %{from: :http, url: "/anything"}
       }
 
@@ -63,6 +67,7 @@ defmodule Saki.TasksTest do
   describe "task execution" do
     test "ping task executes successfully" do
       context = %TaskContext{
+        id: :crypto.strong_rand_bytes(16) |> Base.encode16(),
         request: %{from: :http, url: "/ping"}
       }
 
@@ -71,6 +76,7 @@ defmodule Saki.TasksTest do
 
     test "clock task executes successfully" do
       context = %TaskContext{
+        id: :crypto.strong_rand_bytes(16) |> Base.encode16(),
         request: %{from: :cron}
       }
 

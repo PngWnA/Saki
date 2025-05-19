@@ -16,6 +16,7 @@ defmodule Saki.DispatcherTest do
 
     test "dispatcher accepts ping task dispatch" do
       context = %TaskContext{
+        id: :crypto.strong_rand_bytes(16) |> Base.encode16(),
         request: %{from: :http, url: "/ping"},
         context: %{},
         log: %{}
@@ -27,6 +28,7 @@ defmodule Saki.DispatcherTest do
 
     test "dispatcher accepts clock task dispatch" do
       context = %TaskContext{
+        id: :crypto.strong_rand_bytes(16) |> Base.encode16(),
         request: %{from: :cron},
         context: %{},
         log: %{}

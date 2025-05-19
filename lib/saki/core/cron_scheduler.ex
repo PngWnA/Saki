@@ -36,6 +36,7 @@ defmodule Saki.Core.CronScheduler do
 
   defp run(task) do
     context = %TaskContext{
+      id: :crypto.strong_rand_bytes(16) |> Base.encode16(),
       request: %{:from => :cron, :task => task},
       context: %{},
       log: %{}

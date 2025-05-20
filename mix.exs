@@ -58,7 +58,10 @@ defmodule Saki.MixProject do
       {:oban, "~> 2.16"},
       {:ecto_sql, "~> 3.10"},
       {:ecto_sqlite3, "~> 0.12"},
-      {:uuid, "~> 1.1"}
+      {:uuid, "~> 1.1"},
+      # Development dependencies
+      {:mix_test_watch, "~> 1.1", only: [:dev, :test], runtime: false},
+      {:reloader, "~> 0.1", only: :dev}
     ]
   end
 end

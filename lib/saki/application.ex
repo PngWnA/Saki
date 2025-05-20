@@ -5,10 +5,16 @@ defmodule Saki.Application do
 
   @impl true
   def start(_type, _args) do
-    children = []
+    children = [
+      {Saki.Core.HttpServer,
+        [
+          port: Application.get_env(:saki, Saki.Core.HttpServer)[:port] || 31413
+        ]
+      },
+      {Saki.Core.CronScheduler, []}
+    ]
 
-    opts = [strategy: :one_for_one, name: Saki.Supervisor]
-    Supervisor.start_link(children, opts)
+    Supervisor.start_link(children, strategy: :one_for_one, name: Saki.Supervisor)
   end
 
 end

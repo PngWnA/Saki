@@ -3,14 +3,13 @@ defmodule Saki.Tasks.Clock do
   A simple clock task that can be triggered via HTTP or cron.
   """
 
-  @behaviour Saki.Core.Concept.Task
+  use Saki.Core.Concept.Task,
+    name: "Clock",
+    description: "A simple clock task that can be triggered via HTTP or cron",
+    http_endpoint: "/clock",
+    cron_schedule: "*/1 * * * *"
+
   require Logger
-
-  @impl true
-  def http_endpoint, do: "/clock"
-
-  @impl true
-  def cron_schedule, do: "*/1 * * * *"
 
   @impl true
   def execute(context) do

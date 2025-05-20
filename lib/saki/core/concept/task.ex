@@ -9,21 +9,38 @@ defmodule Saki.Core.Concept.Task do
 
   alias Saki.Core.Concept.TaskContext
 
-  @doc """
-  Executes the task with the given context.
-  Returns {:ok, result} on success or {:error, reason} on failure.
-  """
+  @callback task_name() :: String.t()
+  @callback description() :: String.t()
+  @callback http_endpoint() :: String.t() | nil
+  @callback cron_schedule() :: String.t() | nil
   @callback execute(context :: TaskContext.t()) :: {:ok, any()} | {:error, any()}
 
-  @doc """
-  Returns the HTTP endpoint for this task, if any.
-  Returns nil if this task is not available via HTTP.
-  """
-  @callback http_endpoint() :: String.t() | nil
+  defmacro __using__(opts) do
+    quote do
+      @behaviour Saki.Core.Concept.Task
 
-  @doc """
-  Returns the cron schedule for this task, if any.
-  Returns nil if this task is not scheduled.
-  """
-  @callback cron_schedule() :: String.t() | nil
+      @name unquote(opts[:name])
+      @description unquote(opts[:description] || "")
+      @http_endpoint unquote(opts[:http_endpoint])
+      @cron_schedule unquote(opts[:cron_schedule])
+
+      @impl true
+      def task_name, do: @name
+      @impl true
+      def description, do: @description
+      @impl true
+      def http_endpoint, do: @http_endpoint
+      @impl true
+      def cron_schedule, do: @cron_schedule
+
+      @impl true
+      def execute(context) do
+        # 기본 구현은 에러를 반환합니다.
+        # 각 Task 모듈에서 이 함수를 구현해야 합니다.
+        {:error, :not_implemented}
+      end
+
+      defoverridable [execute: 1]
+    end
+  end
 end

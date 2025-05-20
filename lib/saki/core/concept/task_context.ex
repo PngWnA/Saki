@@ -12,20 +12,20 @@ defmodule Saki.Core.Concept.TaskContext do
     id: String.t(),
     by: by(),
     timestamp: DateTime.t(),
-    params: map()
+    request: map()
   }
 
-  defstruct [:id, :by, :timestamp, :params]
+  defstruct [:id, :by, :timestamp, :request]
 
   @doc """
   Creates a new task context with the given parameters.
   """
-  def new(by, params \\ %{}) do
+  def new(by, request \\ %{}) do
     %__MODULE__{
       id: UUID.uuid4(),
       by: by,
       timestamp: DateTime.utc_now(),
-      params: params
+      request: request
     }
   end
 end

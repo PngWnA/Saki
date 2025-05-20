@@ -57,7 +57,8 @@ defmodule Saki.MixProject do
       {:jason, "~> 1.4"},
       {:oban, "~> 2.16"},
       {:ecto_sql, "~> 3.10"},
-      {:ecto_sqlite3, "~> 0.12"}
+      {:ecto_sqlite3, "~> 0.12"},
+      {:uuid, "~> 1.1"}
     ]
   end
 end

@@ -8,7 +8,7 @@ defmodule Saki.MixProject do
       # 즉, Mix project의 semantic versioning 제약을 무시합니다.
       # https://techblog.lycorp.co.jp/ko/headver-new-versioning-system-for-product-teams
       version: "#{head_ver()}.#{cal_ver()}.#{git_ver()}",
-      description: "Saki-Chan",
+      description: "https://github.com/PngWnA/Saki",
       elixir: "~> 1.15",
       start_permanent: Mix.env() == :prod,
       deps: deps()

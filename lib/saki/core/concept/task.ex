@@ -9,7 +9,7 @@ defmodule Saki.Core.Concept.Task do
 
   alias Saki.Core.Concept.TaskContext
 
-  @callback task_name() :: String.t()
+  @callback name() :: String.t()
   @callback description() :: String.t()
   @callback http_endpoint() :: String.t() | nil
   @callback cron_schedule() :: String.t() | nil
@@ -25,7 +25,7 @@ defmodule Saki.Core.Concept.Task do
       @cron_schedule unquote(opts[:cron_schedule])
 
       @impl true
-      def task_name, do: @name
+      def name, do: @name
       @impl true
       def description, do: @description
       @impl true

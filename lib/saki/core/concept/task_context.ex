@@ -3,10 +3,7 @@ defmodule Saki.Core.Concept.TaskContext do
   Defines the context structure for task execution.
   """
 
-  @type by ::
-    :cron
-    | :http
-    | :manual
+  @type by :: :cron | :http | :manual
 
   @type t :: %__MODULE__{
     id: String.t(),

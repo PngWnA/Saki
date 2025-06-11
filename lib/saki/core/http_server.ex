@@ -6,57 +6,64 @@ defmodule Saki.Core.HttpServer do
   use Plug.Router
   require Logger
 
-  alias Saki.Core.{Dispatcher, Concept.TaskContext}
+  alias Saki.Core.{Dispatcher, Concept.TaskContext, Concept.Self}
+
+  plug :match
 
   plug Plug.Logger
   plug Plug.Parsers,
     parsers: [:json],
     pass: ["application/json"],
     json_decoder: Jason
+
   plug :dispatch
 
-  post _ do
-    Logger.info("Received request: #{inspect(conn)}")
+  get "saki" do
+    send_json_response(conn, 200, Self.meta())
+  end
+
+  get "saki/tasks" do
+    send_json_response(conn, 200, Dispatcher.get_tasks())
+  end
+
+  post "task" do
+    Logger.info("Received request: #{inspect(conn.body_params)}")
     with {:ok, task_name} <- Map.fetch(conn.body_params, "task"),
-         {:ok, task_module} <- Dispatcher.get_task(task_name),
-         context = TaskContext.new(:http, conn.body_params),
-         {:ok, result} <- Dispatcher.execute_task(task_module, context) do
+      {:ok, task_module} <- Dispatcher.get_task(task_name),
+      task_context <- TaskContext.new(:http, conn.body_params),
+      {:ok, result} <- Dispatcher.execute_task(task_module, task_context)
+    do
       send_json_response(conn, 200, %{
-        status: "success",
-        task_id: context.id,
+        task_id: task_context.id,
         result: result
       })
     else
-      {:error, :not_found} ->
+      :error ->
+        send_json_response(conn, 400, %{
+          reason: "Cannot process request."
+        })
+      :not_found ->
         send_json_response(conn, 404, %{
-          status: "error",
-          reason: "Task not found"
+          reason: "No task found to handle this request."
         })
       {:error, reason} ->
         send_json_response(conn, 500, %{
-          status: "error",
           reason: inspect(reason)
         })
     end
-  end
-
-  get "/health" do
-    send_json_response(conn, 200, %{status: "ok"})
+    conn
   end
 
   # Fallback route
   match _ do
-    send_json_response(conn, 404, %{
-      status: "error",
-      reason: "Not found"
-    })
+    # do nothing
+    send_resp(conn, 418, "I'm Saki")
   end
-
-  # Private functions
 
   defp send_json_response(conn, status, body) do
     conn
     |> put_resp_content_type("application/json")
     |> send_resp(status, Jason.encode!(body))
   end
+
 end

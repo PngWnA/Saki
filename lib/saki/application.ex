@@ -9,7 +9,9 @@ defmodule Saki.Application do
 
       Saki.Core.TaskRegistry,
 
-      {Saki.Core.Dispatcher, []},
+      Saki.Core.Dispatcher,
+      Saki.Core.CronScheduler,
+
       Plug.Cowboy.child_spec(
         scheme: :http,
         plug: Saki.Core.HttpServer,
@@ -18,7 +20,6 @@ defmodule Saki.Application do
         ]
       ),
 
-      #{Saki.Core.CronScheduler, []}
     ]
 
     opts = [strategy: :one_for_one, name: Saki.Supervisor]

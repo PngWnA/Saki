@@ -7,6 +7,7 @@ defmodule Saki.Core.CronScheduler do
   require Logger
 
   alias Saki.Core.{Dispatcher, Concept.TaskContext}
+  alias Crontab.CronExpression
 
   def start_link(opts) do
     GenServer.start_link(__MODULE__, opts, name: Keyword.get(opts, :name, __MODULE__))
@@ -75,12 +76,18 @@ defmodule Saki.Core.CronScheduler do
     end)
   end
 
-  defp should_run?(%{schedule: _schedule, last_run: last_run}, now) do
-    # TODO: Implement proper cron expression parsing and matching
-    # For now, just run every minute
+  defp should_run?(%{schedule: schedule, last_run: last_run}, now) do
     case last_run do
       nil -> true
-      last_run -> DateTime.diff(now, last_run, :second) >= 60
+      last_run ->
+        # Convert DateTime to NaiveDateTime for Crontab
+        now_naive = DateTime.to_naive(now)
+        last_run_naive = DateTime.to_naive(last_run)
+
+        # Check if the current time matches the cron schedule
+        # and if it's a new minute since the last run
+        CronExpression.match?(schedule, now_naive) and
+          NaiveDateTime.diff(now_naive, last_run_naive, :second) >= 60
     end
   end
 end

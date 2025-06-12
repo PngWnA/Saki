@@ -29,9 +29,9 @@ defmodule Saki.Core.HttpServer do
   post "task" do
     Logger.info("Received request: #{inspect(conn.body_params)}")
     with {:ok, task_name} <- Map.fetch(conn.body_params, "task"),
-      task_module <- TaskRegistry.get_task(task_name),
+      {:ok, module} <- TaskRegistry.get_task(task_name),
       task_context <- TaskContext.new(:http, conn.body_params),
-      {:ok, status} <- Dispatcher.execute_task(task_module, task_context)
+      {:ok, status} <- Dispatcher.execute_task(module, task_context)
     do
       send_json_response(conn, 200, %{
         task_id: task_context.id,
@@ -42,7 +42,7 @@ defmodule Saki.Core.HttpServer do
         send_json_response(conn, 400, %{
           reason: "Cannot process request."
         })
-      :not_found ->
+      {:error, :not_found} ->
         send_json_response(conn, 404, %{
           reason: "No task found to handle this request."
         })

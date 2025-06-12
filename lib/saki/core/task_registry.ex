@@ -34,7 +34,10 @@ defmodule Saki.Core.TaskRegistry do
   Returns a specific task by name.
   """
   def get_task(task_name) do
-    GenServer.call(__MODULE__, {:get_task, task_name})
+    case GenServer.call(__MODULE__, {:get_task, task_name}) do
+      :not_found -> {:error, :not_found}
+      module -> {:ok, module}
+    end
   end
 
   @impl true

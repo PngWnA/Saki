@@ -75,7 +75,7 @@ defmodule Saki.Core.CronScheduler do
     end)
   end
 
-  defp should_run?(%{schedule: schedule, last_run: last_run}, now) do
+  defp should_run?(%{schedule: _schedule, last_run: last_run}, now) do
     # TODO: Implement proper cron expression parsing and matching
     # For now, just run every minute
     case last_run do

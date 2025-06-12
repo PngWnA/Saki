@@ -6,7 +6,7 @@ defmodule Saki.Core.HttpServer do
   use Plug.Router
   require Logger
 
-  alias Saki.Core.{Dispatcher, Concept.TaskContext, Concept.Self}
+  alias Saki.Core.{Dispatcher, Concept.TaskContext, Concept.Self, TaskRegistry}
 
   plug :match
 
@@ -23,19 +23,19 @@ defmodule Saki.Core.HttpServer do
   end
 
   get "saki/tasks" do
-    send_json_response(conn, 200, Dispatcher.get_tasks())
+    send_json_response(conn, 200, TaskRegistry.get_tasks())
   end
 
   post "task" do
     Logger.info("Received request: #{inspect(conn.body_params)}")
     with {:ok, task_name} <- Map.fetch(conn.body_params, "task"),
-      {:ok, task_module} <- Dispatcher.get_task(task_name),
+      task_module <- TaskRegistry.get_task(task_name),
       task_context <- TaskContext.new(:http, conn.body_params),
-      {:ok, result} <- Dispatcher.execute_task(task_module, task_context)
+      {:ok, status} <- Dispatcher.execute_task(task_module, task_context)
     do
       send_json_response(conn, 200, %{
         task_id: task_context.id,
-        result: result
+        status: status
       })
     else
       :error ->
@@ -51,7 +51,6 @@ defmodule Saki.Core.HttpServer do
           reason: inspect(reason)
         })
     end
-    conn
   end
 
   # Fallback route

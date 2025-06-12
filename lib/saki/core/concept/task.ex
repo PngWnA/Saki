@@ -3,7 +3,6 @@ defmodule Saki.Core.Concept.Task do
   Defines the behaviour for tasks in Saki.
   Tasks must implement the following callbacks:
   - execute/1: Executes the task with the given context
-  - http_endpoint/0: Returns the HTTP endpoint for this task, if any
   - cron_schedule/0: Returns the cron schedule for this task, if any
   """
 
@@ -11,7 +10,6 @@ defmodule Saki.Core.Concept.Task do
 
   @callback name() :: String.t()
   @callback description() :: String.t()
-  @callback http_endpoint() :: String.t() | nil
   @callback cron_schedule() :: String.t() | nil
   @callback execute(context :: TaskContext.t()) :: {:ok, any()} | {:error, any()}
 
@@ -21,15 +19,12 @@ defmodule Saki.Core.Concept.Task do
 
       @name unquote(opts[:name])
       @description unquote(opts[:description] || "")
-      @http_endpoint unquote(opts[:http_endpoint])
-      @cron_schedule unquote(opts[:cron_schedule])
+      @cron_schedule unquote(opts[:cron_schedule] || nil)
 
       @impl true
       def name, do: @name
       @impl true
       def description, do: @description
-      @impl true
-      def http_endpoint, do: @http_endpoint
       @impl true
       def cron_schedule, do: @cron_schedule
 

@@ -11,39 +11,59 @@ defmodule Saki.Core.TaskRegistry do
     GenServer.start_link(__MODULE__, opts, name: Keyword.get(opts, :name, __MODULE__))
   end
 
+  @impl true
+  @spec init(any()) :: {:ok, any()}
   def init(_opts) do
-    tasks = discover_saki_tasks()
-    Logger.info("TaskRegistry discovered following tasks: #{inspect(tasks)}")
+    tasks = discover_tasks()
+    |> Enum.map(fn module -> {module.name(), module} end)
+    |> Enum.into(%{})
+    Logger.info("Following tasks are registered: #{inspect(tasks |> Map.values)}")
     {:ok, tasks}
   end
 
-  def handle_call(:tasks, _from, state) do
-    {:reply, state}
+  # Public API
+
+  @doc """
+  Returns all registered tasks.
+  """
+  def get_tasks do
+    GenServer.call(__MODULE__, :get_tasks)
   end
 
-  defp discover_saki_tasks do
+  @doc """
+  Returns a specific task by name.
+  """
+  def get_task(task_name) do
+    GenServer.call(__MODULE__, {:get_task, task_name})
+  end
+
+  @impl true
+  def handle_call(:get_tasks, _from, state) do
+    {:reply, state, state}
+  end
+
+  @impl true
+  def handle_call({:get_task, task_name}, _from, state) do
+    case Map.fetch(state, task_name) do
+      {:ok, module} -> {:reply, module, state}
+      :error -> {:reply, :not_found, state}
+    end
+  end
+
+  defp discover_tasks do
     # 모든 모듈이 로드되어 있어야 함
     with modules <- Application.spec(:saki, :modules) do
       modules
       |> Code.ensure_all_loaded
 
       modules
-      |> Enum.filter(&is_saki_task?/1)
+      |> Enum.filter(&isTask?/1)
     end
   end
 
-  defp is_saki_task?(module) do
+  defp isTask?(module) do
     module.module_info(:attributes)
     |> Keyword.get(:behaviour, [])
     |> Enum.any?(&(&1 == Saki.Core.Concept.Task))
-  end
-
-  def tasks do
-    GenServer.call(__MODULE__, :tasks)
-  end
-
-  def find_task(%{task: task_name}) do
-    tasks()
-    |> Enum.find(fn task -> task.task_name == task_name end)
   end
 end

@@ -1,28 +1,16 @@
-defmodule Saki.Tasks.Clock do
+defmodule Saki.Tasks.HelloWorld do
   @moduledoc """
-  A simple clock task that can be triggered via HTTP or cron.
+  Test task for Saki.
   """
 
   use Saki.Core.Concept.Task,
-    name: "Clock",
-    description: "A simple clock task that can be triggered via HTTP or cron",
-    http_endpoint: "/clock",
-    cron_schedule: "*/1 * * * *"
+    name: "HelloWorld",
+    description: "Test task for Saki"
 
   require Logger
 
   @impl true
-  def execute(context) do
-    case context.by do
-      :cron ->
-        Logger.info("Clock task executed with context: #{inspect(context)}")
-
-      :http ->
-        Logger.info("Clock task executed with context: #{inspect(context)}")
-
-      :manual ->
-        Logger.info("Clock task executed with context: #{inspect(context)}")
-    end
-    {:ok, context}
+  def execute(_context) do
+    {:ok, "Hello world!"}
   end
 end
